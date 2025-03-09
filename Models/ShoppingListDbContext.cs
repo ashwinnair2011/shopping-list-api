@@ -90,7 +90,7 @@ namespace shopping_list_api.Models
                 UserId = 1,
                 UserName = "system.user",
                 UserPassword = BCrypt.Net.BCrypt.HashPassword("system.user"),
-                Permissions = new List<string> { "ADMIN", "canLogInToApi" },
+                Permissions = new List<string> { "ADMIN", "canLogInToApi", "canViewSettings" },
                 CreatedBy = 1,
                 CreatedOn = DateTime.UtcNow
             };
@@ -114,6 +114,15 @@ namespace shopping_list_api.Models
                 CreatedOn = DateTime.UtcNow
             };
 
+            var viewSettingsPermission = new Permission
+            {
+                PermissionId = 6,
+                PermissionName = "canViewSettings",
+                PermissionDesc = "Can view settings",
+                CreatedBy = 1,
+                CreatedOn = DateTime.UtcNow
+            };
+
             // Seed user permission mappings
             var userAdminPermission = new UserPermission
             {
@@ -129,9 +138,16 @@ namespace shopping_list_api.Models
                 PermissionId = 2
             };
 
+            var userViewSettingsPermission = new UserPermission
+            {
+                UserPermissionId = 3,
+                UserId = 1,
+                PermissionId = 6
+            };
+
             modelBuilder.Entity<User>().HasData(defaultUser);
-            modelBuilder.Entity<Permission>().HasData(adminPermission, loginPermission);
-            modelBuilder.Entity<UserPermission>().HasData(userAdminPermission, userLoginPermission);
+            modelBuilder.Entity<Permission>().HasData(adminPermission, loginPermission, viewSettingsPermission);
+            modelBuilder.Entity<UserPermission>().HasData(userAdminPermission, userLoginPermission, userViewSettingsPermission);
 
             OnModelCreatingPartial(modelBuilder);
         }

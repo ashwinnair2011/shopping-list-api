@@ -6,6 +6,7 @@ using shopping_list_api.Services;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using Microsoft.OpenApi.Any;
+using shopping_list_api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -130,6 +131,7 @@ app.UseHttpsRedirection();
 
 // Add authentication middleware
 app.UseAuthentication();
+app.UseJWTMiddleware();
 app.UseAuthorization();
 
 app.MapControllers();
