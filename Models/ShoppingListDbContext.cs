@@ -90,7 +90,16 @@ namespace shopping_list_api.Models
                 UserId = 1,
                 UserName = "system.user",
                 UserPassword = BCrypt.Net.BCrypt.HashPassword("system.user"),
-                Permissions = new List<string> { "ADMIN", "canLogInToApi", "canViewSettings" },
+                Permissions = new List<string> { 
+                    "ADMIN", 
+                    "canLogInToApi",
+                    "canViewUsers",
+                    "canModifyUsers",
+                    "canViewShoppingLists",
+                    "canModifyShoppingLists",
+                    "canViewSettings",
+                    "canModifySettings"
+                },
                 CreatedBy = 1,
                 CreatedOn = DateTime.UtcNow
             };
@@ -114,11 +123,56 @@ namespace shopping_list_api.Models
                 CreatedOn = DateTime.UtcNow
             };
 
-            var viewSettingsPermission = new Permission
+            var viewUsersPermission = new Permission
+            {
+                PermissionId = 3,
+                PermissionName = "canViewUsers",
+                PermissionDesc = "Can view users",
+                CreatedBy = 1,
+                CreatedOn = DateTime.UtcNow
+            };
+
+            var modifyUsersPermission = new Permission
+            {
+                PermissionId = 4,
+                PermissionName = "canModifyUsers",
+                PermissionDesc = "Can modify users",
+                CreatedBy = 1,
+                CreatedOn = DateTime.UtcNow
+            };
+
+            var viewShoppingListsPermission = new Permission
+            {
+                PermissionId = 5,
+                PermissionName = "canViewShoppingLists",
+                PermissionDesc = "Can view shopping lists",
+                CreatedBy = 1,
+                CreatedOn = DateTime.UtcNow
+            };
+
+            var modifyShoppingListsPermission = new Permission
             {
                 PermissionId = 6,
+                PermissionName = "canModifyShoppingLists",
+                PermissionDesc = "Can modify shopping lists",
+                CreatedBy = 1,
+                CreatedOn = DateTime.UtcNow
+            };
+
+            var viewSettingsPermission = new Permission
+            {
+                PermissionId = 7,
                 PermissionName = "canViewSettings",
                 PermissionDesc = "Can view settings",
+                CreatedBy = 1,
+                CreatedOn = DateTime.UtcNow
+            };
+
+            var modifySettingsPermission = new Permission
+            {
+                PermissionId = 8,
+                PermissionName = "canModifySettings",
+                PermissionDesc = "Can modify settings",
                 CreatedBy = 1,
                 CreatedOn = DateTime.UtcNow
             };
@@ -138,16 +192,69 @@ namespace shopping_list_api.Models
                 PermissionId = 2
             };
 
-            var userViewSettingsPermission = new UserPermission
+            var userViewUsersPermission = new UserPermission
             {
                 UserPermissionId = 3,
+                UserId = 1,
+                PermissionId = 3
+            };
+
+            var userModifyUsersPermission = new UserPermission
+            {
+                UserPermissionId = 4,
+                UserId = 1,
+                PermissionId = 4
+            };
+
+            var userViewShoppingListsPermission = new UserPermission
+            {
+                UserPermissionId = 5,
+                UserId = 1,
+                PermissionId = 5
+            };
+
+            var userModifyShoppingListsPermission = new UserPermission
+            {
+                UserPermissionId = 6,
                 UserId = 1,
                 PermissionId = 6
             };
 
+            var userViewSettingsPermission = new UserPermission
+            {
+                UserPermissionId = 7,
+                UserId = 1,
+                PermissionId = 7
+            };
+
+            var userModifySettingsPermission = new UserPermission
+            {
+                UserPermissionId = 8,
+                UserId = 1,
+                PermissionId = 8
+            };
+
             modelBuilder.Entity<User>().HasData(defaultUser);
-            modelBuilder.Entity<Permission>().HasData(adminPermission, loginPermission, viewSettingsPermission);
-            modelBuilder.Entity<UserPermission>().HasData(userAdminPermission, userLoginPermission, userViewSettingsPermission);
+            modelBuilder.Entity<Permission>().HasData(
+                adminPermission, 
+                loginPermission,
+                viewUsersPermission,
+                modifyUsersPermission,
+                viewShoppingListsPermission,
+                modifyShoppingListsPermission,
+                viewSettingsPermission,
+                modifySettingsPermission
+            );
+            modelBuilder.Entity<UserPermission>().HasData(
+                userAdminPermission,
+                userLoginPermission,
+                userViewUsersPermission,
+                userModifyUsersPermission,
+                userViewShoppingListsPermission,
+                userModifyShoppingListsPermission,
+                userViewSettingsPermission,
+                userModifySettingsPermission
+            );
 
             OnModelCreatingPartial(modelBuilder);
         }
