@@ -42,7 +42,9 @@
                                     "// If successful, extract the token and set it as an environment variable",
                                     "if (pm.response.code === 200) {",
                                     "    const responseBody = pm.response.json();",
-                                    "    pm.environment.set(\"shopping_list_auth_token\", responseBody.token);",
+                                    "    // Remove 'Bearer ' prefix if present",
+                                    "    const token = responseBody.token.replace('Bearer ', '');",
+                                    "    pm.environment.set(\"shopping_list_auth_token\", token);",
                                     "    console.log(\"Auth token updated successfully\");",
                                     "}"
                                 ],
