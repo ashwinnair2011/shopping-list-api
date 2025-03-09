@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace shopping_list_api.Models
 {
@@ -22,6 +23,8 @@ namespace shopping_list_api.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.UserId);
@@ -29,6 +32,11 @@ namespace shopping_list_api.Models
                 entity.Property(e => e.UserPassword).HasMaxLength(250);
                 entity.Property(e => e.UserToken).HasMaxLength(1000);
                 entity.HasIndex(e => e.UserName).IsUnique();
+                entity.Property(u => u.Permissions)
+                    .HasConversion(
+                        v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                        v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions)null)
+                    );
             });
 
             modelBuilder.Entity<Permission>(entity =>
@@ -60,6 +68,9 @@ namespace shopping_list_api.Models
                 entity.Property(e => e.Description).HasMaxLength(1000);
                 entity.HasIndex(e => e.UserId);
                 entity.HasIndex(e => e.StatusId);
+                entity.HasMany(sl => sl.Items)
+                    .WithOne()
+                    .HasForeignKey(sli => sli.ShoppingListId);
             });
 
             modelBuilder.Entity<ShoppingListItem>(entity =>
@@ -72,6 +83,19 @@ namespace shopping_list_api.Models
                     .WithMany(p => p.Items)
                     .HasForeignKey(d => d.ShoppingListId);
             });
+
+            // Seed default system user
+            var defaultUser = new User
+            {
+                UserId = 1,
+                UserName = "system.user",
+                UserPassword = BCrypt.Net.BCrypt.HashPassword("system.user"),
+                Permissions = new List<string> { "ADMIN" },
+                CreatedBy = 1,
+                CreatedOn = DateTime.UtcNow
+            };
+
+            modelBuilder.Entity<User>().HasData(defaultUser);
 
             OnModelCreatingPartial(modelBuilder);
         }
