@@ -1,0 +1,349 @@
+{
+    "info": {
+        "name": "Shopping List API",
+        "description": "Collection for Shopping List API endpoints",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Authentication",
+            "item": [
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{shopping_list_api_url}}/api/authentication?username=system.user&password=system.user",
+                            "host": ["{{shopping_list_api_url}}"],
+                            "path": ["api", "authentication"],
+                            "query": [
+                                {
+                                    "key": "username",
+                                    "value": "system.user"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "system.user"
+                                }
+                            ]
+                        }
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "// Check if the request was successful",
+                                    "pm.test(\"Login successful\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "// If successful, extract the token and set it as an environment variable",
+                                    "if (pm.response.code === 200) {",
+                                    "    const responseBody = pm.response.json();",
+                                    "    pm.environment.set(\"shopping_list_auth_token\", responseBody.token);",
+                                    "    console.log(\"Auth token updated successfully\");",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Settings",
+            "item": [
+                {
+                    "name": "Get Settings",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{shopping_list_auth_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{shopping_list_api_url}}/api/settings",
+                            "host": ["{{shopping_list_api_url}}"],
+                            "path": ["api", "settings"]
+                        }
+                    }
+                },
+                {
+                    "name": "Save Setting",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{shopping_list_auth_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{shopping_list_api_url}}/api/settings?settingId=1&settingValue=newValue",
+                            "host": ["{{shopping_list_api_url}}"],
+                            "path": ["api", "settings"],
+                            "query": [
+                                {
+                                    "key": "settingId",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "settingValue",
+                                    "value": "newValue"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Shopping Lists",
+            "item": [
+                {
+                    "name": "Get Shopping Lists",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{shopping_list_auth_token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"orderBy\": \"Name\",\n    \"order\": \"asc\",\n    \"search\": \"\",\n    \"skip\": 0,\n    \"pageSize\": 10\n}"
+                        },
+                        "url": {
+                            "raw": "{{shopping_list_api_url}}/api/shopping-list",
+                            "host": ["{{shopping_list_api_url}}"],
+                            "path": ["api", "shopping-list"]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Shopping List",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{shopping_list_auth_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{shopping_list_api_url}}/api/shopping-list?id=1",
+                            "host": ["{{shopping_list_api_url}}"],
+                            "path": ["api", "shopping-list"],
+                            "query": [
+                                {
+                                    "key": "id",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Shopping List",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{shopping_list_auth_token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"My Shopping List\",\n    \"description\": \"Shopping list description\",\n    \"statusId\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "{{shopping_list_api_url}}/api/shopping-list/create",
+                            "host": ["{{shopping_list_api_url}}"],
+                            "path": ["api", "shopping-list", "create"]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Shopping List",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{shopping_list_auth_token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"shoppingListId\": 1,\n    \"name\": \"Updated Shopping List\",\n    \"description\": \"Updated description\",\n    \"statusId\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "{{shopping_list_api_url}}/api/shopping-list",
+                            "host": ["{{shopping_list_api_url}}"],
+                            "path": ["api", "shopping-list"]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Shopping List",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{shopping_list_auth_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{shopping_list_api_url}}/api/shopping-list?id=1",
+                            "host": ["{{shopping_list_api_url}}"],
+                            "path": ["api", "shopping-list"],
+                            "query": [
+                                {
+                                    "key": "id",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Shopping List Items",
+            "item": [
+                {
+                    "name": "Add Item",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{shopping_list_auth_token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"shoppingListId\": 1,\n    \"itemName\": \"New Item\",\n    \"quantity\": 1,\n    \"notes\": \"Item notes\",\n    \"isCompleted\": false\n}"
+                        },
+                        "url": {
+                            "raw": "{{shopping_list_api_url}}/api/shopping-list/item",
+                            "host": ["{{shopping_list_api_url}}"],
+                            "path": ["api", "shopping-list", "item"]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Item",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{shopping_list_auth_token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"shoppingListItemId\": 1,\n    \"shoppingListId\": 1,\n    \"itemName\": \"Updated Item\",\n    \"quantity\": 2,\n    \"notes\": \"Updated notes\",\n    \"isCompleted\": false\n}"
+                        },
+                        "url": {
+                            "raw": "{{shopping_list_api_url}}/api/shopping-list/item",
+                            "host": ["{{shopping_list_api_url}}"],
+                            "path": ["api", "shopping-list", "item"]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Item",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{shopping_list_auth_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{shopping_list_api_url}}/api/shopping-list/item?id=1",
+                            "host": ["{{shopping_list_api_url}}"],
+                            "path": ["api", "shopping-list", "item"],
+                            "query": [
+                                {
+                                    "key": "id",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Toggle Item Completion",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{shopping_list_auth_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{shopping_list_api_url}}/api/shopping-list/item/toggle?id=1",
+                            "host": ["{{shopping_list_api_url}}"],
+                            "path": ["api", "shopping-list", "item", "toggle"],
+                            "query": [
+                                {
+                                    "key": "id",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+} 
